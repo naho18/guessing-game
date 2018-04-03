@@ -9,7 +9,15 @@ print "I'm thinking of a number between 1 and 100.\nTry to guess my number."
 guess_count = 1
 
 while True:
-    player_guess = int(raw_input('Your guess? '))
+    player_guess = raw_input('Your guess? ')
+    try:
+        player_guess = int(float(player_guess))
+    except ValueError:
+        print 'That\'s not a number!'
+        continue
+    if player_guess < 1 or player_guess > 100:
+        print 'That isn\'t a number between 1 and 100!'
+        continue
     if player_guess != secret_number:
         guess_count += 1
         if player_guess < secret_number:
