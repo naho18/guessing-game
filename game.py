@@ -1,15 +1,18 @@
 """A number-guessing game."""
 
 import random
+import math
 
 player_name = raw_input('Howdy, what\'s your name?\n(type in your name) ')
 scores = []
 
 
 def main_game():
+    max_num = add_range()
     turn_limit = limit_tries()
-    secret_number = random.randint(1, 100)
-    print "I'm thinking of a number between 1 and 100. Try to guess my number."
+    secret_number = random.randint(1, max_num)
+    print "I'm thinking of a number between 1 and {}. \
+    \nTry to guess my number.".format(max_num)
 
     guess_count = 0
 
@@ -24,8 +27,8 @@ def main_game():
         except ValueError:
             print 'That\'s not a number!'
             continue
-        if player_guess < 1 or player_guess > 100:
-            print 'That isn\'t a number between 1 and 100!'
+        if player_guess < 1 or player_guess > max_num:
+            print 'That isn\'t a number between 1 and {}!'.format(max_num)
             continue
         if player_guess != secret_number:
             if turn_limit is not None:
@@ -37,9 +40,11 @@ def main_game():
             elif player_guess > secret_number:
                 print 'Your guess is too high, try again.'
         else:
-            scores.append(guess_count)
+            score = int(100 * math.log(max_num, 2) / guess_count)
+            scores.append(score)
             print 'Well done, %s! You found my number in %d tries.' % \
                 (player_name, guess_count)
+            print 'Your score is {}.'.format(score)
             break
 
     end_game()
@@ -47,7 +52,7 @@ def main_game():
 
 def end_game():
     try:
-        print 'Your best score is {}.'.format(min(scores))
+        print 'Your best score is {}.'.format(max(scores))
     except ValueError:
         pass
     play_again = raw_input("Press Y to play again: ")
@@ -70,5 +75,15 @@ def limit_tries():
                 continue
     else:
         return None
+
+
+def add_range():
+    user_range = raw_input("Enter a range number (default 100): ")
+    try:
+        user_range = int(float(user_range))
+    except ValueError:
+        user_range = 100
+    return user_range
+
 
 main_game()
